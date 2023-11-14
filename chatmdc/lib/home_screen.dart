@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
   List<String> _data = [];
-  static const String BOT_URL = "https://be31-34-143-167-136.ngrok-free.app";
+  static const String BOT_URL = 'https://6584-104-155-229-101.ngrok-free.app';
 
   TextEditingController queryController = TextEditingController();
   @override

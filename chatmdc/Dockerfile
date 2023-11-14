@@ -1,18 +1,34 @@
-# Sử dụng một hình ảnh chứa Flutter
-FROM mobiledevops/flutter-sdk-image:latest
-# Thiết lập thư mục làm việc trong container
-WORKDIR /app
+FROM ubuntu:20.04
 
-# Sao chép tất cả các tệp từ thư mục gốc của dự án vào thư mục làm việc trong container
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    unzip
+
+
+# download Flutter SDK from Flutter Github repo
+RUN git clone https://github.com/flutter/flutter.git /usr/local/flutter
+
+# Set flutter environment path
+ENV PATH="/usr/local/flutter/bin:/usr/local/flutter/bin/cache/dart-sdk/bin:${PATH}"
+
+# Run flutter doctor
+RUN flutter doctor
+
+# Enable flutter web
+RUN flutter channel master
+RUN flutter upgrade
+
+WORKDIR /app/
+# Copy files to container and build
 COPY . .
 
-# Cài đặt các dependencies
 RUN flutter pub get
 
-# Xây dựng ứng dụng Flutter web
 RUN flutter build web
 
-# Sử dụng một hình ảnh cơ sở chứa web server như nginx
+# Expose cổng cho ứng dụng web
+
 FROM nginx
 
 # Sao chép các tệp build từ bước trước vào thư mục web của nginx
@@ -23,3 +39,5 @@ EXPOSE 80
 
 # Chạy web server
 CMD ["nginx", "-g", "daemon off;"]
+
+#docker run -p 80:80 chatbot
